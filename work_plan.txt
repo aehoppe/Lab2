@@ -1,0 +1,17 @@
+# Work Plan
+Alex Hoppe and Taylor Sheneman
+
+1. Read about the lab and figure out how to structure our approach (1.5 hr) Sunday, 10/22
+2. Make work plan (.5 hr) Sunday, 10/22
+3. Make input conditioner circuitry (0.5 hr) Sunday, 10/22
+4. Make input conditioner tests (1 hr) Sunday, 10/22
+5. Make shift register circuitry (1hr) Monday, 10/23
+6. Make shift register tests (1hr) Monday, 10/23
+7. Midpoint Checkin synthesis/FPGA testing (1.5 hr) Wednesday, 10/25
+8. SPI memory drawing/layout (0.5 hr) Wednesday, 10/25
+9. Make data memory and test (1.5 hr) Saturday, 10/28
+10. Make FSM and test (1.5 hr) Saturday, 10/28
+11. Make supporting circuitry (1hr) Sunday, 10/29
+12. Implement full SPI memory design (1.5 hr) Sunday, 10/29
+13. Tests. (3hr) Monday, 10/30
+14. Compile report (1.5 hr) Tuesday/Wednesday, 10/31 - 11/1
