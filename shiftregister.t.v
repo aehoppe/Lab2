@@ -37,9 +37,10 @@ module testshiftregister();
     $dumpfile("shiftregister.vcd");
     $dumpvars(0, dut);
 
+    peripheralClkEdge = 0; #10
     // Set all data to 0, also do a serial data in and see if it is lower priority
-    serialDataIn = 1; parallelDataIn = 8'd0; parallelLoad = 1; peripheralClkEdge = 1; #100
-    peripheralClkEdge = 0; parallelLoad = 0;
+    serialDataIn = 1; parallelDataIn = 8'd0; parallelLoad = 1; #10
+    peripheralClkEdge = 1; #10 peripheralClkEdge = 0; parallelLoad = 0; #100
     expected = 8'd0;
     if (parallelDataOut != expected) begin
         $display("Test initial parallel set failed, expected pout:%b, got pout:%b", expected, parallelDataOut);
@@ -48,9 +49,9 @@ module testshiftregister();
 
     // Shift in ones and make sure it's working
     for (index = 0; index < 8; index = index + 1) begin
-        serialDataIn = 1; parallelDataIn = 8'd0; parallelLoad = 0; peripheralClkEdge = 1; #100
-        peripheralClkEdge = 0;
-        expected = 8'b10000000 >>> index;
+        serialDataIn = 1; parallelDataIn = 8'd0; parallelLoad = 0; peripheralClkEdge = 1; #10
+        peripheralClkEdge = 0; #100
+        expected = ~(8'b11111110 << index);
         if (parallelDataOut != expected) begin
             $display("Test shift in 1s failed, expected pout:%b, got pout:%b", expected, parallelDataOut);
             testpassed = 0;
@@ -63,8 +64,8 @@ module testshiftregister();
 
     // Shift in zeros and make sure it's working
     for (index = 0; index < 8; index = index + 1) begin
-        serialDataIn = 0; parallelDataIn = 8'd0; parallelLoad = 0; peripheralClkEdge = 1; #100
-        peripheralClkEdge = 0;
+        serialDataIn = 0; parallelDataIn = 8'd0; parallelLoad = 0; peripheralClkEdge = 1; #10
+        peripheralClkEdge = 0; #100
         expected = 8'b01111111 >>> index;
         if (parallelDataOut != expected) begin
             $display("Test shift in 0s failed, expected pout:%b, got pout:%b", expected, parallelDataOut);
@@ -78,7 +79,7 @@ module testshiftregister();
 
     // Display if we've finished it or not
     if (testpassed) begin
-        $disp("Tests passed");
+        $display("Tests passed");
     end
 
     $finish;
