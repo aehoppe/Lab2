@@ -113,17 +113,20 @@ module inputconditionertester
     dutpassed = 1;
     #100;
 
-
+    #9 //offset from clock
     //*** Syncronization Testing Here (???) ***//
-    /*pin = 1; #1; pin = 0; #1;
-    pin = 1; #1; pin = 0; #1;
-    pin = 1; #1; pin = 0; #1;
-    pin = 1; #1; pin = 0; #1;
-    pin = 1; #1; pin = 0; #1;
-    pin = 1; #1; pin = 0; #1;
-    pin = 1; #1; pin = 0; #1;
-    pin = 1; #1; pin = 0; #1;
-    pin = 1; #1; pin = 0; #50;*/
+    pin = 1; #2; pin = 0; #2;
+    pin = 1; #2; pin = 0; #2;
+    pin = 1; #2; pin = 0; #2;
+    pin = 1; #2; pin = 0; #2;
+    pin = 1; #2; pin = 0; #2;
+    pin = 1; #2; pin = 0; #2;
+    pin = 1; #2; pin = 0; #2;
+    pin = 1; #2; pin = 0; #2;
+    pin = 1; #2; pin = 0; #2;
+    pin = 1; #2; pin = 0; #2;
+    #200;
+    #11 //offset from clock
     //If the clock actually had a set and hold time, this signal would cause synchronizer0 to probably have a glitch
     //which synchronizer1 would then remove.
 
@@ -132,48 +135,59 @@ module inputconditionertester
     end
 
     //*** Debouncing Testing Here ***//
-    pin = 1; #40;#1;
+    #1 //offset from clock
+
+    pin = 1; #20;
+
+    pin = 0; #40;
 
     if((conditioned == 1)) begin
       dutpassed = 0;	// Set to 'false' on failure
       $display("Conditioned signal activated at 10 ns of signal. (Test Failed)");
     end
 
-    pin = 0; #200;#19;
+    #200;
 
-    pin = 1; #60;#1;
+    pin = 1; #40;
+
+    pin = 0; #40;
 
     if((conditioned == 1)) begin
       dutpassed = 0;	// Set to 'false' on failure
       $display("Conditioned signal activated at 20 ns of signal. (Test Failed)");
     end
 
-    pin = 0; #200;#19;
-    pin = 1; #80;#1;
+    #200;
+    pin = 1; #60;
+
+    pin = 0; #40;
 
     if((conditioned == 1)) begin
       dutpassed = 0;	// Set to 'false' on failure
       $display("Conditioned signal activated at 30 ns of signal. (Test Failed)");
     end
 
-    pin = 0; #200;#19;
-    pin = 1; #100;#1;
+    #200;
+    pin = 1; #80;
+    pin = 0; #40;
 
     if((conditioned == 0)) begin
       dutpassed = 0;	// Set to 'false' on failure
       $display("Conditioned signal failed to activate at 40 ns of signal. (Test Failed)");
     end
 
-    pin = 0; #200;#19;
+    #200;
 
     if(dutpassed == 1) begin
       $display("Nice going, Your debouncer works hella fine. (Passed Debouncer Testing)");
     end
 
+    #19; //reset offset back to line up signals with clock
+
     //*** Edge Detection Testing ***//
 
     pin = 0; #200
-    pin = 1; #80; #1;
+    pin = 1; #80; #1; //offset so not reading exactly at posedge of clock
 
     if(rising == 1) begin
       dutpassed = 0;
@@ -190,7 +204,7 @@ module inputconditionertester
       $display("Rising set too late");
     end
 
-    #19;
+    #19; //reset offset back to line up signals with clock
 
     pin = 0; #80 #1;
 
