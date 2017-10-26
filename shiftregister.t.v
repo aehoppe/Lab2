@@ -28,6 +28,7 @@ module testshiftregister();
     reg testpassed = 1;
     reg [3:0] index;
     reg [7:0] expected;
+    reg s_expected;
 
     // Generate clock (50MHz)
     initial clk=0;
@@ -37,9 +38,9 @@ module testshiftregister();
     $dumpfile("shiftregister.vcd");
     $dumpvars(0, dut);
 
-    peripheralClkEdge = 0; #10
+    peripheralClkEdge = 0; #20
     // Set all data to 0, also do a serial data in and see if it is lower priority
-    serialDataIn = 1; parallelDataIn = 8'd0; parallelLoad = 1; #10
+    serialDataIn = 1; parallelDataIn = 8'd0; parallelLoad = 1; #20
     peripheralClkEdge = 1; #10 peripheralClkEdge = 0; parallelLoad = 0; #100
     expected = 8'd0;
     if (parallelDataOut != expected) begin
@@ -49,30 +50,32 @@ module testshiftregister();
 
     // Shift in ones and make sure it's working
     for (index = 0; index < 8; index = index + 1) begin
-        serialDataIn = 1; parallelDataIn = 8'd0; parallelLoad = 0; peripheralClkEdge = 1; #10
+        serialDataIn = 1; parallelDataIn = 8'd0; parallelLoad = 0; peripheralClkEdge = 1; #20
         peripheralClkEdge = 0; #100
         expected = ~(8'b11111110 << index);
         if (parallelDataOut != expected) begin
             $display("Test shift in 1s failed, expected pout:%b, got pout:%b", expected, parallelDataOut);
             testpassed = 0;
         end
-        if (serialDataOut != 0) begin
-            $display("Test shift in 1s failed, expected sout:%b, got sout:%b", 0, serialDataOut);
+        s_expected = parallelDataOut[7];
+        if (serialDataOut != s_expected) begin
+            $display("Test shift in 1s failed, expected sout:%b, got sout:%b", s_expected, serialDataOut);
             testpassed = 0;
         end
     end
 
     // Shift in zeros and make sure it's working
     for (index = 0; index < 8; index = index + 1) begin
-        serialDataIn = 0; parallelDataIn = 8'd0; parallelLoad = 0; peripheralClkEdge = 1; #10
+        serialDataIn = 0; parallelDataIn = 8'd0; parallelLoad = 0; peripheralClkEdge = 1; #20
         peripheralClkEdge = 0; #100
-        expected = 8'b01111111 >>> index;
+        expected = 8'b11111110 << index;
         if (parallelDataOut != expected) begin
             $display("Test shift in 0s failed, expected pout:%b, got pout:%b", expected, parallelDataOut);
             testpassed = 0;
         end
-        if (serialDataOut != 1) begin
-            $display("Test shift in 0s failed, expected sout:%b, got sout:%b", 1, serialDataOut);
+        s_expected = parallelDataOut[7];
+        if (serialDataOut != s_expected) begin
+            $display("Test shift in 0s failed, expected sout:%b, got sout:%b", s_expected, serialDataOut);
             testpassed = 0;
         end
     end
