@@ -41,7 +41,7 @@ module spiMemory
   inputconditioner mosi_ic(
     .clk(clk),
     .noisysignal(mosi_pin),
-    .conditioned(serial_in), 
+    .conditioned(serial_in),
     .positiveedge(),
     .negativeedge()
   );
@@ -90,6 +90,14 @@ module spiMemory
     .dataIn(shift_reg_out_P)
   );
 
+  dff #(.width(8)) address_latch(
+    .clk(clk),
+    .clockEdge(sclk_posedge),
+    .writeEnable(addr_we),
+    .D(shift_reg_out_P),
+    .Q(address_latch_out)
+  );
+
   dff serial_out_dff(
     .clk(clk),
     .clockEdge(sclk_negedge),
@@ -105,4 +113,3 @@ module spiMemory
   );
 
 endmodule
-   
