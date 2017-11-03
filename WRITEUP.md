@@ -3,7 +3,6 @@
 ### William Derksen, Alexander Hoppe, Sam Myers, Taylor Sheneman
 
 ## Input Conditioner
-- tests (sync, debounce, edges)
 
 The input conditioner contains three major important pieces we had to test: the syncronizers, debouncer, and edge detectors.
 
@@ -15,14 +14,8 @@ Lastly the edge detectors were measured by simply sending in some longer signals
 
 <img src="input_conditioner.png" alt="Input Conditioner structural schematic" style="width:300px;">
 
-- Waveforms
-- Structural Schematic
-- Debounce glitch time analysis
-
 ## Shift Register
 - architecture?
-- tests (serial to parallel, parallel to serial)
-- Test bench strategy
 
 The test strategy for the shift register was to do a lean, quick validation that it worked the way we expected, and as long as we controlled how it was being used it wouldn't get into any problematic states. There were two main sections to the test: parallel load testing and regular serial shift behavior. We started by shifting in some data and then asserting a parallel load at the same time as one of the shift ins, and verifying that the parallel load took precedence. For the serial tests, we shifted in all ones, then shifted in all zeros. We verified that the parallel readout and the serial output were valid at every step of this process.
 
@@ -64,8 +57,6 @@ In testing SPI memory, we realized we wouldn't have access to SCLK after chip se
 <img src="fsm_fixed.jpg" alt="FSM_board" style="width:300px;">
 
 In addition, we modified the code to always hard reset to idle state on chip select high.
-
-STUFF_BOUT_TESTS
 
 ## SPI Memory
 
