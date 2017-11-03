@@ -16,7 +16,8 @@ module spiMemory
     input           cs_pin,     // SPI chip select
     output          miso_pin,   // SPI master in slave out
     input           mosi_pin,   // SPI master out slave in
-    output [3:0]    leds        // LEDs for debugging
+    output [3:0]    leds,        // LEDs for debugging
+    output [7:0]    state
 );
 
   wire serial_in;
@@ -72,7 +73,8 @@ module spiMemory
     .addr_WE(addr_we),
     .miso_BUFE(miso_bufe),
     .DM_WE(dm_we),
-    .SR_WE(sr_we)
+    .SR_WE(sr_we),
+    .state(state)
   );
 
   shiftregister shift_reg(

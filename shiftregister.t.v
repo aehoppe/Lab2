@@ -20,7 +20,7 @@ module testshiftregister();
     		           .peripheralClkEdge(peripheralClkEdge),
     		           .parallelLoad(parallelLoad),
     		           .parallelDataIn(parallelDataIn),
-    		           .serialDataIn(serialDataIn),
+    		           .serialDataIn(serialDataIn), 
     		           .parallelDataOut(parallelDataOut),
     		           .serialDataOut(serialDataOut));
 

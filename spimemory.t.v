@@ -13,6 +13,7 @@ module testSpiMemory();
   wire          miso_pin;   // SPI master in slave out
   wire          mosi_pin;   // SPI master out slave in
   wire [3:0]    leds;        // LEDs for debugging
+  wire [7:0]    state;
 
   reg begintest;
   wire dutpassed;
@@ -23,7 +24,8 @@ module testSpiMemory();
                 .cs_pin(cs_pin),
                 .miso_pin(miso_pin),
                 .mosi_pin(mosi_pin),
-                .leds(leds));
+                .leds(leds),
+                .state(state));
 
   spiMemoryTester tester(.begintest(begintest),
                       .endtest(endtest),
@@ -82,8 +84,7 @@ module spiMemoryTester (
     // Basic write test
     address = 7'd10;
     tx_data = 8'd47;
-
-    write_spi(address, tx_data);
+    write_spi(address, tx_data); #10000
     read_spi(address);
 
     if (rx_data != tx_data) begin
@@ -95,7 +96,7 @@ module spiMemoryTester (
 
     //Write all zeros, get all zeros, write all ones get all ones
     address = 7'd56;
-    tx_data = 8'b00000000;
+    tx_data = 8'b00000000; #10000
     write_spi(address, tx_data);
     read_spi(address);
     if (rx_data != tx_data) begin
