@@ -13,6 +13,8 @@
 - tests (serial to parallel, parallel to serial)
 - Test bench strategy
 
+The test strategy for the shift register was to do a lean, quick validation that it worked the way we expected, and as long as we controlled how it was being used it wouldn't get into any problematic states. There were two main sections to the test: parallel load testing and regular serial shift behavior. We started by shifting in some data and then asserting a parallel load at the same time as one of the shift ins, and verifying that the parallel load took precedence. For the serial tests, we shifted in all ones, then shifted in all zeros. We verified that the parallel readout and the serial output were valid at every step of this process. 
+
 ## Midpoint FPGA Implementation
 
 We tested the intermediate input conditioner/shift register device by uploading it to an FPGA with LED outputs. Serial and parallel inputs and outputs all worked as expected.
@@ -52,6 +54,11 @@ Other stuff about the code?
 Tests???
 
 ## SPI Memory
-- Testing strategy
+
+To valiate that the SPI memory was actually working, we designed a test bench with two helper tasks for SPI write and SPI read. To do a basic test that it worked, the first six transactions in the test bench are just a write of a byte followed by reading that same byte. 
+
+To verify that the addressing scheme worked nicely and also that repeated reads or repeated writes work, we designed a series of six writes to different addresses, and then read them all back and verified that the proper data came out.
+
+In designing the test benches for the SPI and examining the spec, we realized that our FSM did not have proper support for resetting to idle state when the CS line had a positive edge during the middle of a transaction. This prompted some redesign of the FSM. 
 
 ## Work Plan Reflection
