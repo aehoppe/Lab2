@@ -201,9 +201,9 @@ module fsmtester(
 
     testnum = dutprint(state, testnum, dutpassed);
 
-    // DONE
+    // IDLE
     #1000;
-    statecorrect = statecheck(state, 8'b10000000);
+    statecorrect = statecheck(state, 8'b00000001);
 
 
     dutpassed = dutcheck(0, addr_WE, dutpassed);
@@ -312,10 +312,10 @@ module fsmtester(
       testnum = dutprint(state, testnum, dutpassed);
     end
 
-    // DONE
+    // IDLE
 
     #1000;
-    statecorrect = statecheck(state, 8'b10000000);
+    statecorrect = statecheck(state, 8'b00000001);
 
 
     dutpassed = dutcheck(0, addr_WE, dutpassed);

@@ -32,133 +32,146 @@ module FSM
 
   initial state = IDLE;
 
-  always @(posedge cs_pin) begin
-    state = IDLE;
-  end
-
-  always @(posedge sclk) begin
+  always @(posedge clk) begin
     //if(state == 8'bx) begin
     //  state <= IDLE;
     //end else begin
-    case(state)
-      IDLE: begin
-        //currstate <= IDLE;
-        if(cs_pin == 0) begin
-          state = ADDRESS;
+    if (cs_pin == 1) begin
+      state = IDLE;
+      addr_WE <= 0;
+      miso_BUFE <= 0;
+      DM_WE <= 0;
+      SR_WE <= 0;
+    end
+    // forces all write enables to only
+    // occur for one sys clock cycle
+    if (SR_WE == 1)
+      SR_WE <= 0;
+    if (addr_WE == 1)
+      addr_WE <= 0;
+    if (DM_WE == 1)
+      DM_WE <= 0;
+
+    if(sclk) begin
+      case(state)
+        IDLE: begin
+          //currstate <= IDLE;
+          if(cs_pin == 0) begin
+            state = ADDRESS;
+            counter <= 3'b000;
+          end else if (cs_pin == 1) begin
+            state = IDLE;
+          end
+        end
+
+        ADDRESS: begin
+          //currstate <= ADDRESS;
+          if(counter < 5) begin
+            state = ADDRESS;
+            counter <= counter + 3'b001;
+          end else begin
+            state = ADDRESS_WRITE;
+          end
+        end
+
+        ADDRESS_WRITE: begin
+          //currstate <= ADDRESS_WRITE;
+          // addr_WE <= 1;
           counter <= 3'b000;
-        end else if (cs_pin == 1) begin
-          state = IDLE;
+          if(shiftReg0 == 1) begin
+            state = READ_START;
+          end else begin
+            state = WRITE_WAIT;
+          end
         end
-      end
 
-      ADDRESS: begin
-        //currstate <= ADDRESS;
-        if(counter < 5) begin
-          state = ADDRESS;
-          counter <= counter + 3'b001;
-        end else begin
-          state = ADDRESS_WRITE;
-        end
-      end
-
-      ADDRESS_WRITE: begin
-        //currstate <= ADDRESS_WRITE;
-        // addr_WE <= 1;
-        counter <= 3'b000;
-        if(shiftReg0) begin
-          state = READ_START;
-        end else begin
-          state = WRITE_WAIT;
-        end
-      end
-
-      READ_START: begin
-        //currstate = READ_START;
-        //SR_WE
-        //miso_BUFE
-        state = READ;
-      end
-
-      READ: begin
-        //miso_BUFE
-        //currstate = READ;
-        if(counter < 6) begin
+        READ_START: begin
+          //currstate = READ_START;
+          //SR_WE
+          //miso_BUFE
           state = READ;
-          counter <= counter + 3'b001;
-        end else begin
+        end
+
+        READ: begin
+          //miso_BUFE
+          //currstate = READ;
+          if(counter < 6) begin
+            state = READ;
+            counter <= counter + 3'b001;
+          end else begin
+            state = IDLE;
+          end
+        end
+
+        WRITE_WAIT: begin
+          //currstate = WRITE_WAIT;
+          if(counter < 7) begin
+            state = WRITE_WAIT;
+            counter <= counter + 3'b001;
+          end else begin
+            state = WRITE_MEM;
+          end
+        end
+
+        WRITE_MEM: begin
+          //currstate = WRITE_MEM;
           state = IDLE;
+          //DM_WE
         end
-      end
-
-      WRITE_WAIT: begin
-        //currstate = WRITE_WAIT;
-        if(counter < 7) begin
-          state = WRITE_WAIT;
-          counter <= counter + 3'b001;
-        end else begin
-          state = WRITE_MEM;
+      endcase
+      case (state)
+        //driving - follow traffic laws
+        IDLE: begin
+          addr_WE <= 0;
+          miso_BUFE <= 0;
+          DM_WE <= 0;
+          SR_WE <= 0;
         end
-      end
-
-      WRITE_MEM: begin
-        //currstate = WRITE_MEM;
-        state = IDLE;
-        //DM_WE
-      end
-    endcase
-    case (state)
-      //driving - follow traffic laws
-      IDLE: begin
-        addr_WE <= 0;
-        miso_BUFE <= 0;
-        DM_WE <= 0;
-        SR_WE <= 0;
-      end
 
 
-      ADDRESS: begin
-        addr_WE <= 0;
-        miso_BUFE <= 0;
-        DM_WE <= 0;
-        SR_WE <= 0;
-      end
+        ADDRESS: begin
+          addr_WE <= 0;
+          miso_BUFE <= 0;
+          DM_WE <= 0;
+          SR_WE <= 0;
+        end
 
 
-      ADDRESS_WRITE: begin
-        addr_WE <= 1;
-        miso_BUFE <= 0;
-        DM_WE <= 0;
-        SR_WE <= 0;
-      end
+        ADDRESS_WRITE: begin
+          addr_WE <= 1;
+          miso_BUFE <= 0;
+          DM_WE <= 0;
+          SR_WE <= 0;
+        end
 
-      READ_START:begin
-        addr_WE <= 0;
-        miso_BUFE <= 1;
-        DM_WE <= 0;
-        SR_WE <= 1;
-      end
+        READ_START:begin
+          addr_WE <= 0;
+          miso_BUFE <= 1;
+          DM_WE <= 0;
+          SR_WE <= 1;
+        end
 
-      READ:begin
-        addr_WE <= 0;
-        miso_BUFE <= 1;
-        DM_WE <= 0;
-        SR_WE <= 0;
-      end
+        READ:begin
+          addr_WE <= 0;
+          miso_BUFE <= 1;
+          DM_WE <= 0;
+          SR_WE <= 0;
+        end
 
-      WRITE_WAIT:begin
-        addr_WE <= 0;
-        miso_BUFE <= 0;
-        DM_WE <= 0;
-        SR_WE <= 0;
-      end
+        WRITE_WAIT:begin
+          addr_WE <= 0;
+          miso_BUFE <= 0;
+          DM_WE <= 0;
+          SR_WE <= 0;
+        end
 
-      WRITE_MEM:begin
-        addr_WE <= 0;
-        miso_BUFE <= 0;
-        DM_WE <= 1;
-        SR_WE <= 0;
-      end
-    endcase
+        WRITE_MEM:begin
+          addr_WE <= 0;
+          miso_BUFE <= 0;
+          DM_WE <= 1;
+          SR_WE <= 0;
+        end
+      endcase
+    end
   end
-
 endmodule

@@ -84,10 +84,10 @@ module spiMemoryTester (
     // Basic write test
     address = 7'd10;
     tx_data = 8'd47;
-    write_spi(address, tx_data); #10000
+    write_spi(address, tx_data); #10000;
     read_spi(address);
 
-    if (rx_data != tx_data) begin
+    if (rx_data != tx_data | rx_data === 8'bx) begin
       dutpassed = 0;
       $display("Test SPI writeback failed, wrote %d to %b, got %d", tx_data, address, rx_data);
     end
@@ -97,9 +97,9 @@ module spiMemoryTester (
     //Write all zeros, get all zeros, write all ones get all ones
     address = 7'd56;
     tx_data = 8'b00000000; #10000
-    write_spi(address, tx_data);
+    write_spi(address, tx_data); #10000;
     read_spi(address);
-    if (rx_data != tx_data) begin
+    if (rx_data != tx_data | rx_data === 8'bx) begin
       dutpassed = 0;
       $display("Test SPI write zeros failed, wrote %d to %b, got %d", tx_data, address, rx_data);
     end
@@ -109,9 +109,9 @@ module spiMemoryTester (
     //Write all zeros, get all zeros, write all ones get all ones
     address = 7'd56;
     tx_data = 8'b11111111;
-    write_spi(address, tx_data);
+    write_spi(address, tx_data); #10000;
     read_spi(address);
-    if (rx_data != tx_data) begin
+    if (rx_data != tx_data | rx_data === 8'bx) begin
       dutpassed = 0;
       $display("Test SPI write ones failed, wrote %d to %b, got %d", tx_data, address, rx_data);
     end
@@ -134,42 +134,42 @@ module spiMemoryTester (
 
     address = 7'd0; tx_data = 8'd0;
     read_spi(7'd0);
-    if (rx_data != 8'd0) begin
+    if (rx_data != 8'd0 | rx_data === 8'bx) begin
       dutpassed = 0;
       $display("Test SPI multiple write failed, wrote %d to %b, got %d", 8'd0, 7'd0, rx_data);
     end #10000;
 
     address = 7'd1; tx_data = 8'd1;
     read_spi(7'd1);
-    if (rx_data != 8'd1) begin
+    if (rx_data != 8'd1 | rx_data === 8'bx) begin
       dutpassed = 0;
       $display("Test SPI multiple write failed, wrote %d to %b, got %d", 8'd1, 7'd1, rx_data);
     end #10000;
 
     address = 7'd2; tx_data = 8'd2;
     read_spi(7'd2);
-    if (rx_data != 8'd2) begin
+    if (rx_data != 8'd2 | rx_data === 8'bx) begin
       dutpassed = 0;
       $display("Test SPI multiple write failed, wrote %d to %b, got %d", 8'd2, 7'd2, rx_data);
     end #10000;
 
     address = 7'd3; tx_data = 8'd4;
     read_spi(7'd3);
-    if (rx_data != 8'd4) begin
+    if (rx_data != 8'd4 | rx_data === 8'bx) begin
       dutpassed = 0;
       $display("Test SPI multiple write failed, wrote %d to %b, got %d", 8'd4, 7'd3, rx_data);
     end #10000;
 
     address = 7'd4; tx_data = 8'd8;
     read_spi(7'd4);
-    if (rx_data != 8'd8) begin
+    if (rx_data != 8'd8 | rx_data === 8'bx) begin
       dutpassed = 0;
       $display("Test SPI multiple write failed, wrote %d to %b, got %d", 8'd8, 7'd4, rx_data);
     end #10000;
 
     address = 7'd5; tx_data = 8'd16;
     read_spi(7'd5);
-    if (rx_data != 8'd16) begin
+    if (rx_data != 8'd16 | rx_data === 8'bx) begin
       dutpassed = 0;
       $display("Test SPI multiple write failed, wrote %d to %b, got %d", 8'd16, 7'd5, rx_data);
     end #10000;
@@ -221,6 +221,8 @@ module spiMemoryTester (
       end
       // Read-Write bit
       sclk_pin = 0;
+      mosi_pin = 0;#1000 // Write
+      sclk_pin = 1;#1000
       //Clock in data
       for (idx = 0; idx < 8; idx = idx+1) begin
         sclk_pin = 0;

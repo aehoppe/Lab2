@@ -69,7 +69,7 @@ module spiMemory
     .clk(clk),
     .sclk(sclk_posedge),
     .cs_pin(cs),
-    .shiftReg0(shift_reg_out_P[0]),
+    .shiftReg0(mosi_pin),
     .addr_WE(addr_we),
     .miso_BUFE(miso_bufe),
     .DM_WE(dm_we),
