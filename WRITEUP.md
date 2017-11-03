@@ -13,8 +13,9 @@
 - tests (serial to parallel, parallel to serial)
 - Test bench strategy
 
-## Midpoint (?)
-- maybe briefly mention results
+## Midpoint FPGA Implementation
+
+We tested the intermediate input conditioner/shift register device by uploading it to an FPGA with LED outputs. Serial and parallel inputs and outputs all worked as expected.
 
 ## SPI peripheral components
 - Data Memory Module
@@ -42,7 +43,13 @@ Functionally, the state machine must:
 
 Our design, made to fulfill these requirements:
 
-<img src="fsm_board.jpg" alt="FSM_board" style="width:600px;">
+<img src="fsm_board.jpg" alt="FSM_board" style="width:400px;">
+
+This was implemented in code in a switch-case pattern, with each case corresponding to a control state, which defines the state of the four possible control signal outputs.
+
+Other stuff about the code?
+
+Tests???
 
 ## SPI Memory
 - Testing strategy
