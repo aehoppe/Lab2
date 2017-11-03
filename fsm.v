@@ -32,6 +32,10 @@ module FSM
 
   initial state = IDLE;
 
+  always @(posedge cs_pin) begin
+    state = IDLE;
+  end
+
   always @(posedge sclk) begin
     //if(state == 8'bx) begin
     //  state <= IDLE;
@@ -82,7 +86,7 @@ module FSM
           state = READ;
           counter <= counter + 3'b001;
         end else begin
-          state = DONE;
+          state = IDLE;
         end
       end
 
@@ -98,17 +102,8 @@ module FSM
 
       WRITE_MEM: begin
         //currstate = WRITE_MEM;
-        state = DONE;
+        state = IDLE;
         //DM_WE
-      end
-
-      DONE: begin
-        //currstate = DONE;
-        if(cs_pin == 1)begin
-          state = IDLE;
-        end else begin
-          state = DONE;
-        end
       end
     endcase
     case (state)
@@ -163,14 +158,6 @@ module FSM
         DM_WE <= 1;
         SR_WE <= 0;
       end
-
-      DONE:begin
-        addr_WE <= 0;
-        miso_BUFE <= 0;
-        DM_WE <= 0;
-        SR_WE <= 0;
-      end
-
     endcase
   end
 
