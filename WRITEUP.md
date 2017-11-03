@@ -13,7 +13,7 @@ The debouncers were tested by setting the input pin from 0 to 1 for 1, 2, 3, and
 
 Lastly the edge detectors were measured by simply sending in some longer signals and checking for the impulses at the beginning and end of the conditioned signal for the positive edge and negative edge respectively.
 
-![input_conditioner.png](Input Conditioner structural schematic)
+<img src="input_conditioner.png" alt="Input Conditioner structural schematic" style="width:300px;">
 
 - Waveforms
 - Structural Schematic
