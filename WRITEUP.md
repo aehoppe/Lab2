@@ -15,7 +15,6 @@ Lastly the edge detectors were measured by simply sending in some longer signals
 <img src="input_conditioner.png" alt="Input Conditioner structural schematic" style="width:300px;">
 
 ## Shift Register
-- architecture?
 
 The test strategy for the shift register was to do a lean, quick validation that it worked the way we expected, and as long as we controlled how it was being used it wouldn't get into any problematic states. There were two main sections to the test: parallel load testing and regular serial shift behavior. We started by shifting in some data and then asserting a parallel load at the same time as one of the shift ins, and verifying that the parallel load took precedence. For the serial tests, we shifted in all ones, then shifted in all zeros. We verified that the parallel readout and the serial output were valid at every step of this process.
 
