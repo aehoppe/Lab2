@@ -13,7 +13,7 @@
 - tests (serial to parallel, parallel to serial)
 - Test bench strategy
 
-The test strategy for the shift register was to do a lean, quick validation that it worked the way we expected, and as long as we controlled how it was being used it wouldn't get into any problematic states. There were two main sections to the test: parallel load testing and regular serial shift behavior. We started by shifting in some data and then asserting a parallel load at the same time as one of the shift ins, and verifying that the parallel load took precedence. For the serial tests, we shifted in all ones, then shifted in all zeros. We verified that the parallel readout and the serial output were valid at every step of this process. 
+The test strategy for the shift register was to do a lean, quick validation that it worked the way we expected, and as long as we controlled how it was being used it wouldn't get into any problematic states. There were two main sections to the test: parallel load testing and regular serial shift behavior. We started by shifting in some data and then asserting a parallel load at the same time as one of the shift ins, and verifying that the parallel load took precedence. For the serial tests, we shifted in all ones, then shifted in all zeros. We verified that the parallel readout and the serial output were valid at every step of this process.
 
 ## Midpoint FPGA Implementation
 
@@ -44,23 +44,27 @@ Functionally, the state machine must:
 
 Our design, made to fulfill these requirements:
 
-<img src="fsm_board.jpg" alt="FSM_board" style="width:400px;">
+<img src="fsm_board.jpg" alt="FSM_board" style="width:300px;">
 
 This was implemented in code in a switch-case pattern, with each case corresponding to a control state, which defines the state of the four possible control signal outputs.
 
-Other stuff about the code?
+In testing SPI memory, we realized we wouldn't have access to SCLK after chip select goes high, which necessitated some redesign.
 
-Tests???
+<img src="fsm_fixed.jpg" alt="FSM_board" style="width:300px;">
+
+In addition, we modified the code to always hard reset to idle state on chip select high.
+
+STUFF_BOUT_TESTS
 
 ## SPI Memory
 
 Finally, we wrote a top-level SPI module that connected all the appropriate component ports into a complete SPI memory module.
 
-To validate that the SPI memory was actually working, we designed a test bench with two helper tasks for SPI write and SPI read. To do a basic test that it worked, the first six transactions in the test bench are just a write of a byte followed by reading that same byte. 
+To validate that the SPI memory was actually working, we designed a test bench with two helper tasks for SPI write and SPI read. To do a basic test that it worked, the first six transactions in the test bench are just a write of a byte followed by reading that same byte.
 
 To verify that the addressing scheme worked nicely and also that repeated reads or repeated writes work, we designed a series of six writes to different addresses, and then read them all back and verified that the proper data came out.
 
-In designing the test benches for the SPI and examining the spec, we realized that our FSM did not have proper support for resetting to idle state when the CS line had a positive edge during the middle of a transaction. This prompted some redesign of the FSM. 
+In designing the test benches for the SPI and examining the spec, we realized that our FSM did not have proper support for resetting to idle state when the CS line had a positive edge during the middle of a transaction. This prompted some redesign of the FSM.
 
 ## Work Plan Reflection
 
