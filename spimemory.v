@@ -6,6 +6,8 @@
 `include "datamemory.v"
 `include "shiftregister.v"
 `include "fsm.v"
+`include "buffer.v"
+`include "dff.v"
 
 module spiMemory
 (
@@ -54,7 +56,7 @@ module spiMemory
     .negativeedge(sclk_negedge)
   );
 
-  inputconditioner sclk_ic(
+  inputconditioner cs_ic(
     .clk(clk),
     .noisysignal(cs_pin),
     .conditioned(cs),
@@ -63,6 +65,7 @@ module spiMemory
   );
 
   FSM fsm(
+    .clk(clk),
     .sclk(sclk_posedge),
     .cs_pin(cs),
     .shiftReg0(shift_reg_out_P[0]),
@@ -92,8 +95,7 @@ module spiMemory
 
   dff #(.width(8)) address_latch(
     .clk(clk),
-    .clockEdge(sclk_posedge),
-    .writeEnable(addr_we),
+    .clockEdge(addr_we),
     .D(shift_reg_out_P),
     .Q(address_latch_out)
   );
@@ -101,9 +103,8 @@ module spiMemory
   dff serial_out_dff(
     .clk(clk),
     .clockEdge(sclk_negedge),
-    .writeEnable(),
     .D(serial_out),
-    .Q(miso),
+    .Q(miso)
   );
 
   buffer miso_buffer(
