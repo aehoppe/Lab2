@@ -4,6 +4,17 @@
 
 ## Input Conditioner
 - tests (sync, debounce, edges)
+
+The input conditioner contains three major important pieces we had to test: the syncronizers, debouncer, and edge detectors.
+
+To start, the synchronizers cannot actually correctly be tested.  The point of the second synchronizer is to prevent glitches from the first synchronizer due to hold time, and setup time, therefore it cannot really be tested because verilog doesn't simulate these real world attributes of circuitry.
+
+The debouncers were tested by setting the input pin from 0 to 1 for 1, 2, 3, and 4 clock cycles.  The idea being that the first 3 shouldn't set the conditioned signal correctly, but the last one does correctly set it.
+
+Lastly the edge detectors were measured by simply sending in some longer signals and checking for the impulses at the beginning and end of the conditioned signal for the positive edge and negative edge respectively.
+
+![input_conditioner.png](Input Conditioner structural schematic)
+
 - Waveforms
 - Structural Schematic
 - Debounce glitch time analysis
